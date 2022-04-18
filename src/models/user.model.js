@@ -1,27 +1,14 @@
-const mongoose = require('mongoose')
+const userModel = require('./user.mongo')
 
-const { errorLog } = require('./log.model')
-//Define a schema
-const Schema = mongoose.Schema
+async function findUsers(filter, skip, limit) {
+    return await userModel.find(filter).skip(skip).limit(limit)
+}
 
-const userModelSchema = new Schema({
-    _id: { type: mongoose.ObjectId },
-    networkId: { type: mongoose.ObjectId },
-    publicId: { type: String },
-    __v: { type: Number },
-    createdAt: { type: Date },
-    displayName: { type: String },
-    roleIds: [mongoose.ObjectId],
-    updatedAt: { type: Date },
-    flagCount: { type: Number },
-    flags: [],
-    isAdmin: { type: Boolean },
-    displayNameSuffix: [String],
-    displayNameTokenize: { type: String },
-    publicIdTokenize: { type: String },
-    path: { type: String },
-})
+async function estimatedDocumentCountUsers(filter, skip, limit) {
+    return await userModel.estimatedDocumentCount(filter).skip(skip).limit(limit)
+}
 
-const userModel = mongoose.model('users', userModelSchema)
-
-module.exports = { userModel }
+module.exports = {
+    findUsers,
+    estimatedDocumentCountUsers,
+}
