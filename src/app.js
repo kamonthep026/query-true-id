@@ -4,7 +4,6 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const fs = require('fs')
 const writeFile = require('util').promisify(fs.writeFile)
-const jsonfile = require('jsonfile')
 
 const { log, errorLog } = require('./models/log.model')
 const { findUsers, estimatedDocumentCountUsers } = require('./models/user.model')
@@ -37,7 +36,7 @@ async function saveToFile(amount, i) {
                     1000
                 )
                 // log(`🚀 ~ file: app.js ~ line 149 ~ .then ~ res \n${data}`)
-                writeFile(`./json/${Date.now()}_TrueId_${j}.json`, JSON.stringify(data), function (err) {
+                writeFile(`./json/${Date.now()}_TrueId_${i}.json`, JSON.stringify(data), function (err) {
                     if (err) {
                         reject(err)
                     } else {
