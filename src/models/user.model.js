@@ -8,7 +8,12 @@ async function estimatedDocumentCountUsers(filter, skip, limit, sort) {
     return await userModel.estimatedDocumentCount(filter).skip(skip).limit(limit).sort(sort)
 }
 
+async function countUsers(filter, skip, limit, sort) {
+    return await userModel.count(filter).skip(skip).limit(limit).sort(sort)
+}
+
 module.exports = {
     findUsers,
     estimatedDocumentCountUsers,
+    countUsers,
 }

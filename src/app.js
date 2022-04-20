@@ -37,18 +37,17 @@ async function saveToFile(amount) {
                 let data = await findUsers(
                     {
                         networkId: mongoose.mongo.ObjectId('5a963b859b3f120011724809'),
-                        displayName: { $ne: 'Anonymous' },
+                        updatedAt: { $gte: new Date('2022-01-01T00:00:00Z') },
                     },
                     amount,
-                    5000,
-                    { updatedAt: -1 }
+                    5000
                 )
                 comparingValues(data)
                 // console.log(typeof dataComparing)
                 // console.log(dataComparing)
                 // log(`🚀 ~ file: app.js ~ line 149 ~ .then ~ res \n${data}`)
 
-                if (newData.length > 0 && newData.length >= 5000) {
+                if (newData.length > 0 && newData.length >= 100) {
                     writeFile(`./json/${Date.now()}_TrueId_${i + 1}.json`, JSON.stringify(newData), function (err) {
                         if (err) {
                             reject(err)
@@ -86,7 +85,6 @@ app.get('/data-to-json', async (req, res) => {
 
         res.status(200).json({
             status: 200,
-            // length: total,
             message: 'ok',
         })
     } catch (error) {
