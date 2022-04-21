@@ -7,6 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "eslint 'src/**/*.js'",
         "lint:fix": "prettier-standard 'src/**/*.js'",
+        "file-json": "node src/jsonConcat.js",
         "watch": "nodemon src/server.js",
         "start": "node src/server.js"
     },
