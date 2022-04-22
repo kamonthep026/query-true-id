@@ -19,7 +19,6 @@ app.use(
 
 let complete = 0
 let i = 0
-let amount = 0
 let newData = []
 
 function comparingValues(data) {
@@ -30,7 +29,7 @@ function comparingValues(data) {
     }
 }
 
-async function saveToFile(amount) {
+async function saveToFile(skip, limit) {
     const myPromise = new Promise((resolve, reject) => {
         setTimeout(async () => {
             try {
@@ -39,15 +38,13 @@ async function saveToFile(amount) {
                         networkId: mongoose.mongo.ObjectId('5a963b859b3f120011724809'),
                         updatedAt: { $gte: new Date('2022-01-01T00:00:00Z') },
                     },
-                    amount,
-                    5000
+                    skip,
+                    limit
                 )
                 comparingValues(data)
-                // console.log(typeof dataComparing)
-                // console.log(dataComparing)
                 // log(`🚀 ~ file: app.js ~ line 149 ~ .then ~ res \n${data}`)
 
-                if (newData.length > 0 && newData.length >= 100) {
+                if (newData.length != 0 && newData.length >= 2) {
                     writeFile(`./json/${Date.now()}_TrueId_${i + 1}.json`, JSON.stringify(newData), function (err) {
                         if (err) {
                             reject(err)
@@ -73,26 +70,44 @@ async function saveToFile(amount) {
     return myPromise
 }
 
-app.get('/data-to-json', async (req, res) => {
-    try {
-        do {
-            log(`amount ${amount + 5000}, file ${i}, newData ${newData.length}`)
-            console.time('answer time')
-            await saveToFile(amount)
-            console.timeEnd('answer time')
-            amount += 5000
-        } while (complete !== 1)
+app.post('/users', async (req, res) => {
+    if (req.method == 'POST') {
+        let body = req.body
+        let messageError = {}
 
-        res.status(200).json({
-            status: 200,
-            message: 'ok',
-        })
-    } catch (error) {
-        errorLog(error)
-        res.status(400).json({
-            status: 400,
-            message: error,
-        })
+        if (typeof body.skip != 'number') messageError['skip'] = ['Invalid skip']
+        if (typeof body.limit != 'number') messageError['skip'] = ['Invalid limit']
+
+        if (Object.keys(messageError).length >= 1) {
+            res.status(400).json({
+                status: 400,
+                errors: messageError,
+            })
+        } else {
+            try {
+                let skip = body.skip ? body.skip : 0
+                let limit = body.limit ? body.limit : 5000
+
+                do {
+                    log(`amount ${skip + limit}, file ${i}, newData ${newData.length}`)
+                    console.time('answer time')
+                    await saveToFile(skip, limit)
+                    console.timeEnd('answer time')
+                    skip += limit
+                } while (complete !== 1)
+
+                res.status(200).json({
+                    status: 200,
+                    message: 'ok',
+                })
+            } catch (error) {
+                errorLog(error)
+                res.status(400).json({
+                    status: 400,
+                    message: error,
+                })
+            }
+        }
     }
 })
 
