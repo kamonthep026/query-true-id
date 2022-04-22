@@ -96,8 +96,8 @@ app.post('/users', async (req, res) => {
                     skip += limit
                 } while (complete !== 1)
 
-                res.status(200).json({
-                    status: 200,
+                res.status(201).json({
+                    status: 201,
                     message: 'ok',
                 })
             } catch (error) {
